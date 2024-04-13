@@ -31,16 +31,23 @@
                     </div>
                     <div class="field">
                         <div class="label">
-                            Village Name
+                            State
                         </div>
-                        <input type="text" name="village_name">
+                        <select name="state" id="state">
+                            <!-- Options will be dynamically populated -->
+                        </select>
                     </div>
                     <div class="field">
                         <div class="label">
-                            Region
+                            Village Name
                         </div>
-                        <input type="text" name="region">
+                        <select name="village_name" id="village">
+                            <!-- Options will be dynamically populated -->
+                        </select>
                     </div>
+                    
+                    
+                    
                     <div class="field">
                         <button class="firstNext next">Next</button>
                     </div>
@@ -150,6 +157,80 @@
     <!-- Required for hCaptcha -->
     <script src="https://web3forms.com/client/script.js" async defer></script>
     <script src="script.js"></script>
+   
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Village data for India
+            const villageData = {
+                "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Kakinada", "Rajamahendravaram", "Tirupati", "Anantapur", "Kadapa"],
+                "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Pasighat", "Roing", "Tezu", "Ziro", "Along", "Daporijo", "Yingkiong", "Tawang"],
+                "Assam": ["Guwahati", "Silchar", "Dibrugarh", "Jorhat", "Nagaon", "Tinsukia", "Bongaigaon", "Dhubri", "Tezpur", "Sivasagar"],
+                "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Arrah", "Begusarai", "Katihar", "Munger"],
+                "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Durg", "Raigarh", "Rajnandgaon", "Jagdalpur", "Ambikapur", "Dhamtari"],
+                "Goa": ["Panaji", "Margao", "Vasco da Gama", "Ponda", "Mapusa", "Bicholim", "Curchorem", "Sanquelim", "Canacona", "Quepem"],
+                "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Anand", "Nadiad"],
+                "Haryana": ["Faridabad", "Gurgaon", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Sonipat", "Panchkula"],
+                "Himachal Pradesh": ["Shimla", "Mandi", "Solan", "Dharamshala", "Kullu", "Chamba", "Sirmaur", "Una", "Bilaspur", "Hamirpur"],
+                "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro Steel City", "Deoghar", "Phusro", "Hazaribagh", "Giridih", "Ramgarh", "Medininagar"],
+                "Karnataka": ["Bangalore", "Mysore", "Hubli-Dharwad", "Mangalore", "Belgaum", "Gulbarga", "Davanagere", "Bellary", "Bijapur", "Shimoga"],
+                "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur", "Kannur", "Alappuzha", "Palakkad", "Kottayam", "Manjeri"],
+                "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa"],
+                "Maharashtra": ["Wardha", "Sevagram", "Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad", "Solapur", "Thane", "Amravati", "Kolhapur", "Nanded"],
+                "Manipur": ["Imphal", "Thoubal", "Kakching", "Mayang Imphal", "Churachandpur", "Bishnupur", "Senapati", "Ukhrul", "Lilong", "Wangjing"],
+                "Meghalaya": ["Shillong", "Tura", "Nongstoin", "Jowai", "Baghmara", "Williamnagar", "Nongpoh", "Resubelpara", "Mairang", "Amlarem"],
+                "Mizoram": ["Aizawl", "Lunglei", "Saiha", "Champhai", "Serchhip", "Kolasib", "Lawngtlai", "Saitual", "Khawzawl", "Hnahthial"],
+                "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha", "Zunheboto", "Phek", "Mon", "Chumukedima", "Tseminyu"],
+                "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Brahmapur", "Sambalpur", "Puri", "Balasore", "Bhadrak", "Baripada", "Jharsuguda"],
+                "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Hoshiarpur", "Mohali", "Batala", "Pathankot", "Moga"],
+                "Rajasthan": ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Ajmer", "Udaipur", "Bhilwara", "Alwar", "Sikar", "Pali"],
+                "Sikkim": ["Gangtok", "Namchi", "Gyalshing", "Mangan", "Singtam", "Rangpo", "Soreng", "Jorethang", "Ravangla", "Soreng"],
+                "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Tiruppur", "Salem", "Erode", "Tirunelveli", "Vellore", "Thoothukudi"],
+                "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Ramagundam", "Khammam", "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet"],
+                "Tripura": ["Agartala", "Dharmanagar", "Udaipur", "Ambassa", "Kailasahar", "Belonia", "Teliamura", "Khowai", "Sonamura", "Bishalgarh"],
+                "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Varanasi", "Allahabad", "Meerut", "Bareilly", "Aligarh", "Moradabad"],
+                "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Pauri", "Ramnagar", "Kotdwar"],
+                "West Bengal": ["Kolkata", "Asansol", "Siliguri", "Durgapur", "Bardhaman", "Malda", "Baharampur", "Kharagpur", "Habra", "Shantipur"]
+            };
+    
+            // Indian states
+            const indianStates = Object.keys(villageData);
+    
+            const stateSelect = document.getElementById('state');
+            const villageSelect = document.getElementById('village');
+    
+            // Populate state dropdown
+            indianStates.forEach(function (state) {
+                const option = document.createElement('option');
+                option.text = state;
+                stateSelect.add(option);
+            });
+    
+            // Event listener for state select change
+            stateSelect.addEventListener('change', function () {
+                const selectedState = stateSelect.value;
+                const villages = villageData[selectedState] || [];
+    
+                // Clear previous options
+                villageSelect.innerHTML = '';
+    
+                // Populate village options (limit to 10 villages)
+                const limitedVillages = villages.slice(0, 10);
+                limitedVillages.forEach(function (village) {
+                    const option = document.createElement('option');
+                    option.text = village;
+                    villageSelect.add(option);
+                });
+            });
+    
+            // Trigger change event to populate villages initially
+            stateSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
+    
+    
+    
 
 </body>
 
